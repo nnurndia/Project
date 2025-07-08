@@ -1,0 +1,55 @@
+import java.io.FileWriter; // to creates the file
+import java.io.IOException; // to handles error
+import java.util.Random; //to generate random data
+
+public class GenerateData { // open main
+    public static void main(String[] args) throws IOException { //open class
+        
+        // list of pirates names to choose from
+        String[] names = {"Luffy", "Zoro", "Nami", "Sanji", "Usopp", "Chopper", "Robin", "Franky", "Brook", "Jinbe"};
+        
+        // list of pirates crews
+        String[] crews = {"Straw Hat Pirates", "Red Hair Pirates", "Heart Pirates", "Blackbeard Pirates"};
+        
+        // list of mission types
+        String[] types = {"Treasure Hunt", "Marine Battle", "Duel", "Spy Mission", "Ancient Text Retrieval"};
+        
+        // create a random generator
+        Random rand = new Random();
+
+        // create a new txt file to store the data
+        FileWriter fw = new FileWriter("onepiece_combined.txt");
+
+        // repeat this 100 times to generate 100 mission entries
+        for (int i = 1; i <= 100; i++) { //open loop
+            
+            // random memberId 
+            String memberId = String.format("CM%03d", rand.nextInt(20) + 1);
+            // random pirate name
+            String name = names[rand.nextInt(names.length)];
+            // random pirate crew
+            String crew = crews[rand.nextInt(crews.length)];
+            // missionId from MIS001 to MIS100
+            String missionId = String.format("MIS%03d", i);
+            // random mission type
+            String type = types[rand.nextInt(types.length)];
+            // random danger level between 1 and 5
+            int danger = rand.nextInt(5) + 1;
+            // mission date between 10-30 July 2025
+            String date = "2025-07-" + String.format("%02d", rand.nextInt(20) + 10);
+            // random mission duraation 
+            int duration = rand.nextInt(4) + 1;
+            // random bounty reward 
+            int reward = (rand.nextInt(10) + 1) * 1000;
+
+            // write all data into the text file, seperated by |
+            fw.write(memberId + "|" + name + "|" + crew + "|" + missionId + "|" + type + "|" +
+                     danger + "|" + date + "|" + duration + "|" + reward + "\n");
+        } // close loop
+
+        // close the file after writing all data
+        fw.close();
+        // show message when done
+        System.out.println("Data written to onepiece_combined.txt");
+    } // close class
+} // close main
