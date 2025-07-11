@@ -1,0 +1,96 @@
+// This class is used to store data for one pirate mission
+public class MissionInfo 
+{ 
+    // Declare variables to hold mission details
+    private String missionID;           // Unique ID for the mission (e.g., MIS001)
+    private String missionType;         // Type of mission (e.g., Treasure Hunt, Duel)
+    private int dangerLevel;            // Level of risk (1 to 5)
+    private String missionDate;         // Date of the mission (in yyyy-MM-dd format)
+    private String expectedDuration;    // Estimated duration (in days, stored as String)
+    private int bountyReward;           // Reward amount for the mission in Berries
+
+    // Constructor: used to create a MissionInfo object with all details
+    public MissionInfo(String id, String type, int level, String date, String duration, int bounty) 
+    {
+        missionID = id;                 // Set the mission ID
+        missionType = type;             // Set the mission type
+        dangerLevel = level;            // Set the danger level
+        missionDate = date;             // Set the date
+        expectedDuration = duration;    // Set the expected duration
+        bountyReward = bounty;          // Set the bounty reward
+    }
+
+    // Accessor methods (getters) — allow other classes to read the private values
+
+    public String getMissionID() 
+    {
+        return missionID;               // Return mission ID
+    }
+
+    public String getMissionType() 
+    {
+        return missionType;             // Return mission type
+    }
+
+    public int getDangerLevel() 
+    {
+        return dangerLevel;             // Return danger level
+    }
+
+    public String getMissionDate() 
+    {
+        return missionDate;             // Return mission date
+    }
+
+    public String getExpectedDuration() 
+    {
+        return expectedDuration;        // Return expected duration
+    }
+
+    public int getBountyReward() 
+    {
+        return bountyReward;            // Return bounty reward
+    }
+
+    // Mutator methods (setters) — allow updating values if needed
+
+    public void setMissionID(String id)
+    {
+        missionID = id;                 // Update mission ID
+    }
+
+    public void setMissionType(String type)
+    {
+        missionType = type;             // Update mission type
+    }
+
+    public void setdangerLevel(int level)
+    {
+        dangerLevel = level;            // Update danger level
+    }
+
+    public void setMissionDate(String date)
+    {
+        missionDate = date;             // Update mission date
+    }
+
+    public void setExpectedDuration(String duration)
+    {
+        expectedDuration = duration;    // Update duration
+    }
+
+    public void setBountyReward(int bounty)
+    {
+        bountyReward = bounty;          // Update bounty reward
+    }
+
+    // toString method: used to display the mission info in readable format
+    public String toString()
+    {
+        return "Mission ID: " + missionID +
+               "\nDanger Level: " + dangerLevel +
+               "\nDate: " + missionDate + 
+               "\nDuration: " + expectedDuration + " day(s)" +
+               "\nBounty Reward: " + bountyReward + " Berries";
+    }
+}
