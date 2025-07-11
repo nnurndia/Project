@@ -1,0 +1,74 @@
+import javax.swing.JTextArea;
+
+public class MainStack 
+{
+    // Declare the stack that stores pirates who completed their missions
+    private Stack completedStack;
+
+    // Constructor: create a new empty stack
+    public MainStack() 
+    {
+        completedStack = new Stack(); // initialize the completedStack
+    }
+
+    // Process up to 5 pirates from a single queue and push them into the stack
+    public void processQueues(Queue routeQueue) 
+    {
+        for (int i = 0; i < 5; i++) // limit to 5 pirates
+        {
+            if (!routeQueue.isEmpty()) // check if queue is not empty
+            {
+                CrewMemberInfo m = routeQueue.dequeue(); // remove from queue
+                completedStack.push(m); // push into stack (LIFO)
+            }
+        }
+    }
+
+    // Display all pirates from the stack in the GUI text area
+    public void displayCompletedPirates(JTextArea outputArea) 
+    {
+        Stack temp = new Stack(); // temporary stack to hold popped pirates
+
+        // Pop all pirates from the completed stack
+        while (!completedStack.isEmpty())
+        {
+            CrewMemberInfo m = completedStack.pop();     // remove from main stack
+            outputArea.append(m.toString() + "\n");      // display pirate info
+            temp.push(m);                                // store in temp stack
+        }
+
+        // Restore the pirates back into the completed stack (preserve original order)
+        while (!temp.isEmpty())
+        {
+            completedStack.push(temp.pop()); // return pirates back to completed stack
+        }
+    }
+
+    // Clear all pirates from the stack
+    public void clear() 
+    {
+        while (!completedStack.isEmpty())
+        {
+            completedStack.pop(); // remove one by one until empty
+        }
+    }
+
+    // Return the number of pirates in the stack
+    public int getCompletedCount()
+    {
+        return completedStack.size(); // return stack size
+    }
+
+    // Alias method (same as processQueues)
+    public void processQueue(Queue routeQueue)
+    {
+        for (int i = 0; i < 5; i++) // process 5 pirates max
+        {
+            if (!routeQueue.isEmpty())
+            {
+                CrewMemberInfo m = routeQueue.dequeue(); // dequeue pirate
+                completedStack.push(m);                  // push into stack
+            }
+        }
+    }
+}
