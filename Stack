@@ -1,0 +1,67 @@
+import java.util.LinkedList;
+
+// This class defines a custom stack using LinkedList to manage pirates (LIFO order)
+public class Stack 
+{
+    // LinkedList to store pirate objects
+    private LinkedList<CrewMemberInfo> stack;
+
+    // Constructor: create empty stack when object is created
+    public Stack() 
+    {
+        stack = new LinkedList<CrewMemberInfo>(); // initialize empty LinkedList
+    }
+
+    // Push a pirate onto the top of the stack
+    public void push(CrewMemberInfo pirate) 
+    {
+        stack.addFirst(pirate); // Add pirate to the front (top of the stack)
+        // This ensures LIFO (Last In, First Out) behavior
+    }
+
+    // Pop a pirate from the top of the stack
+    public CrewMemberInfo pop() 
+    {
+        if (!isEmpty()) 
+        {
+            return stack.removeFirst(); // Remove and return the top pirate
+        } 
+        else 
+        {
+            System.out.println("Stack is empty!"); // If empty, show warning
+            return null; // Return null if nothing to pop
+        }
+    }
+
+    // Peek: view the pirate at the top of the stack without removing
+    public CrewMemberInfo peek()
+    {
+        if (!isEmpty())
+        {
+            return stack.getFirst(); // Return the top pirate
+        }
+        else 
+        {
+            System.out.println("Stack is empty!"); // If empty, show warning
+            return null; // Return null if nothing to peek
+        }
+    }
+
+    // Check if the stack is currently empty
+    public boolean isEmpty() 
+    {
+        return stack.isEmpty(); // true if there are no pirates in stack
+    }
+
+    // Return the number of pirates in the stack
+    public int size() 
+    {
+        return stack.size(); // size of the LinkedList
+    }
+
+    // Return the entire stack (used for display or looping)
+    public LinkedList<CrewMemberInfo> getAll() 
+    {
+        return stack; // return the full LinkedList
+    }
+}
