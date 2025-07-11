@@ -1,0 +1,63 @@
+import java.util.LinkedList;
+
+// This class defines a custom queue using LinkedList to store CrewMemberInfo objects
+public class Queue 
+{
+    // A LinkedList to hold pirate crew members in order (FIFO)
+    private LinkedList<CrewMemberInfo> queue;
+
+    // Constructor to create an empty queue
+    public Queue() 
+    {
+        queue = new LinkedList<>(); // initialize the empty linked list
+    }
+
+    // Method to add (enqueue) a pirate to the end of the queue
+    public void enqueue(CrewMemberInfo pirate) 
+    {
+        queue.addLast(pirate); // adds pirate to the back of the list
+    }
+
+    // Method to remove (dequeue) the pirate at the front of the queue
+    public CrewMemberInfo dequeue() 
+    {
+        if (!isEmpty()) {
+            return queue.removeFirst(); // removes and returns the first pirate
+        } else {
+            System.out.println("Queue is empty!"); // message if queue has no elements
+            return null; // return null if empty
+        }
+    }
+
+    // Method to check if the queue is empty
+    public boolean isEmpty() 
+    {
+        return queue.isEmpty(); // returns true if queue has no pirates
+    }
+
+    // Method to see the pirate at the front of the queue (without removing)
+    public CrewMemberInfo front() 
+    {
+        if (!isEmpty()) 
+        {
+            return queue.getFirst(); // return the first pirate in queue
+        } 
+        else 
+        {
+            System.out.println("Queue is empty!"); // message if empty
+            return null; // return null if nothing to show
+        }
+    }
+
+    // Method to return the number of pirates currently in the queue
+    public int size()
+    {
+        return queue.size(); // returns the current number of elements
+    }
+
+    // Method to return the entire LinkedList (for displaying or looping)
+    public LinkedList<CrewMemberInfo> getAll()
+    {
+        return queue; // gives access to all pirates in the queue
+    }
+}
