@@ -1,0 +1,77 @@
+import java.util.LinkedList;
+
+// This class manages the routing of pirates into 3 mission queues
+public class RouteManagerQueue
+{
+    // Declare 3 queues for each route
+    private Queue eastBlue;     // Queue for pirates with <= 3 missions
+    private Queue southBlue;    // Queue for pirates with <= 3 missions 
+    private Queue grandLine;    // Queue for pirates with > 3 missions
+
+    // Toggle counter used to alternate between East and South Blue
+    private int toggle = 0; // 0 = East Blue, 1 = South Blue, then repeat
+
+    // Constructor: initialize all 3 route queues
+    public RouteManagerQueue()
+    {
+        eastBlue = new Queue();    // Create East Blue queue
+        southBlue = new Queue();   // Create South Blue queue
+        grandLine = new Queue();   // Create Grand Line queue
+    }
+
+    // Method to assign a pirate to the correct queue based on mission count
+    public void assignPirateToQueue(CrewMemberInfo m)
+    {
+        // Get number of missions this pirate has
+        int missions = m.getmissionsList().size();
+
+        // If pirate has more than 3 missions, go to Grand Line (if not full)
+        if (missions > 3 && grandLine.size() < 5)
+        {
+            grandLine.enqueue(m); // Add to Grand Line queue
+        }
+
+        // If pirate has 3 or fewer missions
+        else if (missions <= 3)
+        {
+            // Alternate between East and South Blue
+            if (toggle % 2 == 0 && eastBlue.size() < 5)
+            {
+                eastBlue.enqueue(m); // Add to East Blue
+                toggle++;            // Switch turn to South
+            }
+            else if (southBlue.size() < 5)
+            {
+                southBlue.enqueue(m); // Add to South Blue
+                toggle++;             // Switch turn to East
+            }
+        }
+    }
+
+    // Getter method to access East Blue queue
+    public Queue getEastBlueQueue()
+    {
+        return eastBlue;
+    }
+
+    // Getter method to access South Blue queue
+    public Queue getSouthBlueQueue()
+    {
+        return southBlue;
+    }
+
+    // Getter method to access Grand Line queue
+    public Queue getGrandLineQueue()
+    {
+        return grandLine;
+    }
+
+    // Check if all 3 queues have 5 pirates each 
+    public boolean allQueuesFull()
+    {
+        return eastBlue.size() == 5 && 
+               southBlue.size() == 5 && 
+               grandLine.size() == 5;
+    }
+}    
+    
