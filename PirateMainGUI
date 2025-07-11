@@ -1,0 +1,258 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.LinkedList;
+import javax.swing.border.TitledBorder;
+
+public class PirateMainGUI extends JFrame
+{
+   private JTextArea eastArea, southArea, grandArea, outputArea; // 3 routes display areas 
+   private JLabel piratesLeftLabel; // label showing how many pirates from left to assign
+   private JButton loadBtn, assignBtn, processBtn, displayBtn, resetBtn; // buttons for all actions
+   
+   private PirateLoader loader = new PirateLoader(); // loads data from txt file
+   private RouteManagerQueue routeManager = new RouteManagerQueue(); // manage East/South/Grand Line queues
+   private MainStack mainStack = new MainStack(); // handles completed pirate stack
+   private LinkedList<CrewMemberInfo> missionsList = new LinkedList<CrewMemberInfo>(); // holds all pirates loaded from file 
+   private int currentIndex = 0; // to keep track of which pirates are already assigned
+   
+   public PirateMainGUI()
+   {
+       // setup the frame
+       setTitle("Pirate Crew System"); 
+       setSize(800, 600); 
+       setLayout(new BorderLayout());
+       
+       //==============Font and color==========================
+       Font font = new Font("Comic Sans MS" , Font.PLAIN , 14);
+       Color pink = new Color(255, 210 , 220); 
+       Color darkGrey = new Color(50 , 50 , 50); 
+    
+       
+       //==================Button Panel=========================
+       // panel w 5 buttons which are load, assign, process, display, reset
+       JPanel buttonPanel = new JPanel(new GridLayout(1 , 5));
+       loadBtn = new JButton("Load Crew");
+       assignBtn = new JButton("Set Sail");
+       processBtn = new JButton("Begin Battle");
+       displayBtn = new JButton("View Achievements");
+       resetBtn =new JButton("Restart Journey");
+       
+       styleButton(loadBtn, new Color(255, 182, 193));
+       styleButton(assignBtn, new Color(255, 182, 193));
+       styleButton(processBtn, new Color(255, 182, 193));
+       styleButton(displayBtn, new Color(255, 182, 193));
+       styleButton(resetBtn, new Color(255, 182, 193));
+       
+       buttonPanel.add(loadBtn);
+       buttonPanel.add(assignBtn);
+       buttonPanel.add(processBtn);
+       buttonPanel.add(displayBtn);
+       buttonPanel.add(resetBtn);
+       
+       //====================Center Panel (Areas)==================
+       JPanel centerPanel = new JPanel(new GridLayout(1, 3));
+       
+       eastArea = new JTextArea();
+       styleArea(eastArea, pink, font, darkGrey, "East Blue");
+       
+       southArea = new JTextArea();
+       styleArea(southArea, pink, font, darkGrey, "South Blue");
+       
+       grandArea = new JTextArea();
+       styleArea(grandArea, pink, font, darkGrey, "Grand Line");
+       
+       centerPanel.add(new JScrollPane(eastArea));
+       centerPanel.add(new JScrollPane(southArea));
+       centerPanel.add(new JScrollPane(grandArea));
+       
+       //====================Output Area (Bottom)====================
+       outputArea = new JTextArea(6, 30);
+       outputArea.setFont(font);
+       outputArea.setForeground(darkGrey);
+       outputArea.setBackground(new Color(240, 240, 240));
+       JScrollPane outputScroll = new JScrollPane(outputArea);
+       
+       piratesLeftLabel = new JLabel("Pirates Left: 0");
+       piratesLeftLabel.setFont(font);
+       piratesLeftLabel.setHorizontalAlignment(SwingConstants.CENTER);
+       
+       add(buttonPanel, BorderLayout.NORTH);
+       add(centerPanel, BorderLayout.CENTER);
+       add(outputScroll, BorderLayout.SOUTH);
+       add(piratesLeftLabel, BorderLayout.WEST);
+       
+       //===============ACTION====================================
+       
+       //Load crew
+       loadBtn.addActionListener(new ActionListener()
+       {
+           public void actionPerformed(ActionEvent e)
+           {
+               try
+               {
+                   loader.loadFromFile("onepiece_combined.txt");
+                   missionsList = loader.pirateList(); // store them in memory
+                   piratesLeftLabel.setText("Pirates Left: " + missionsList.size());
+                   
+                   //Declare
+                   int totalMissions = 0;
+                   
+                   // count total missions
+                   for (CrewMemberInfo pirate : missionsList)
+                   {
+                       totalMissions += pirate.getmissionsList().size();
+                   }
+                   
+                   // display loading summary
+                   outputArea.setText("Crew loaded successfully!\n");
+                   outputArea.append("Total Pirates: " + missionsList.size() + "\n");
+                   outputArea.append("Total Missions: " + totalMissions + "\n");
+                   
+                   double avg = (double) totalMissions / missionsList.size();
+                   outputArea.append("Average Missions per Pirate: " + String.format("%.2f", avg) + "\n");
+               }
+               catch (Exception ex)
+               {
+                   outputArea.setText("Error loading file.\n");
+               }
+           }
+       });
+       
+       
+       assignBtn.addActionListener(new ActionListener()
+       {
+           public void actionPerformed(ActionEvent e)
+           {
+               int assignedCount = 0;
+               // assign up to 15 pirates into queues
+               while (currentIndex < missionsList.size() && assignedCount < 15)
+               {
+                   CrewMemberInfo m = missionsList.get(currentIndex);
+                   routeManager.assignPirateToQueue(m);
+                   assignedCount++;
+                   currentIndex++;
+               }
+               
+               //update display area
+               updateArea(eastArea, routeManager.getEastBlueQueue());
+               updateArea(southArea, routeManager.getSouthBlueQueue());
+               updateArea(grandArea, routeManager.getGrandLineQueue());
+               
+               //Update left counter
+               int piratesLeft = missionsList.size() - currentIndex;
+               piratesLeftLabel.setText("Pirates Left: " + piratesLeft);
+           }
+       });
+       
+       //Begin battle
+       processBtn.addActionListener(new ActionListener()
+       {
+           public void actionPerformed(ActionEvent e)
+           {
+               mainStack.processQueue(routeManager.getEastBlueQueue());
+               mainStack.processQueue(routeManager.getSouthBlueQueue());
+               mainStack.processQueue(routeManager.getGrandLineQueue());
+               
+               // clear route displays after sending to battle
+               eastArea.setText("East Blue (Empty)");
+               southArea.setText("South Blue (Empty)");
+               grandArea.setText("Grand Line (Empty)");
+           }
+       });
+       
+       //View achievement
+       displayBtn.addActionListener(new ActionListener()
+       {
+           public void actionPerformed(ActionEvent e)
+           {
+               outputArea.setText("Completed Pirates:\n\n");
+               
+               // show pirates in LIFO order
+               mainStack.displayCompletedPirates(outputArea);
+           }
+       });
+       
+       //reset
+       resetBtn.addActionListener(new ActionListener()
+       {
+           public void actionPerformed(ActionEvent e)
+           {
+               routeManager = new RouteManagerQueue();
+               mainStack = new MainStack();
+               currentIndex = 0;
+               
+               // clear everything
+               outputArea.setText("System reset.\n");
+               
+               eastArea.setText("");
+               southArea.setText("");
+               grandArea.setText("");
+               
+               piratesLeftLabel.setText("Pirates Left: " + missionsList.size());
+           }
+       });
+       
+       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       setVisible(true);
+   }
+   
+   private void styleArea(JTextArea area, Color bg,  Font font, Color fg, String title)
+   {
+       area.setFont(font);
+       area.setBackground(bg);
+       area.setForeground(fg);
+       area.setEditable(false);
+       
+       //To set border title (Center)
+       TitledBorder border = BorderFactory.createTitledBorder(title);
+       border.setTitleJustification(TitledBorder.CENTER);
+       border.setTitlePosition(TitledBorder.TOP);
+       area.setBorder(border);
+   }
+   
+   private void styleButton(JButton button, Color bgColor)
+   {
+       button.setFont(new Font("Comic Sans MS", Font.BOLD, 13));            
+       button.setForeground(new Color(50, 50, 50));                           
+       button.setBackground(bgColor);                                         
+       button.setFocusPainted(false);                                         
+       button.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1));
+   }
+   
+   private void updateArea(JTextArea area, Queue queue)
+   {
+       area.setText("");
+       for (CrewMemberInfo m : queue.getAll())
+       {
+           String name = m.getPirateName();
+           int missionCount = m.getmissionsList().size();
+           int bounty = m.getTotalBounty();
+           
+           //Ambik semua mission type
+           StringBuilder types = new StringBuilder();
+           for (MissionInfo mission : m.getmissionsList())
+           {
+               types.append(mission.getMissionType()).append(", ");
+           }
+           
+           String typeList;
+           if (types.length() > 0)
+           {
+               typeList = types.substring(0, types.length() - 2);
+           }
+           else 
+           {
+               typeList = "No mission yet.";
+           }
+           
+           area.append(name + " : " + m.getmissionsList().size() + " missions - " + bounty + " Berries\n");
+           area.append("Mission: " + typeList + "\n\n");
+       }
+   }
+   
+   public static void main(String[] args)
+   {
+       new PirateMainGUI();
+   }
+}
