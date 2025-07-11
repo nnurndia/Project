@@ -1,0 +1,80 @@
+// Required for reading from files and using lists
+import java.io.*;
+import java.util.*;
+
+public class PirateLoader 
+{
+    // LinkedList to store all pirates and their mission data
+    private LinkedList<CrewMemberInfo> pirateList;
+
+    // Constructor: create empty list on object creation
+    public PirateLoader()
+    {
+        pirateList = new LinkedList<CrewMemberInfo>(); // Create empty LinkedList
+    }
+
+    // Method to load data from file and populate the pirate list
+    public void loadFromFile(String filename) throws IOException
+    {
+        // Open file for reading using BufferedReader
+        BufferedReader in = new BufferedReader(new FileReader("onepiece_combined.txt"));
+        String indata; // Temporary variable to hold each line
+
+        // Loop through each line in the file
+        while ((indata = in.readLine()) != null) 
+        {
+            // Split the line using '|' as delimiter
+            StringTokenizer st = new StringTokenizer(indata, "|");
+
+            // Read pirate basic info
+            String pirateID = st.nextToken();       // e.g. CM001
+            String pirateName = st.nextToken();     // e.g. Luffy
+            String pirateCrew = st.nextToken();     // e.g. Straw Hat Pirates
+
+            // Check if this pirate is already in the list
+            CrewMemberInfo existing = null; // will hold existing pirate (if found)
+
+            for (CrewMemberInfo m : pirateList)
+            {
+                if (m.getPirateID().equals(pirateID))
+                {
+                    existing = m; // found existing pirate, break loop
+                    break;
+                }
+            }
+
+            // If pirate is not yet in list, create new and add
+            if (existing == null)
+            {
+                existing = new CrewMemberInfo(pirateID, pirateName, pirateCrew);
+                pirateList.add(existing);
+            }
+
+            // Now process mission info for this pirate
+            String missionID = st.nextToken();                    // e.g. MIS001
+            String missionType = st.nextToken();                  // e.g. Treasure Hunt
+            int dangerLevel = Integer.parseInt(st.nextToken());   // convert danger level to int
+            String missionDate = st.nextToken();                  // e.g. 2025-07-14
+            String expectedDuration = st.nextToken();             // e.g. 2
+            int bountyReward = Integer.parseInt(st.nextToken());  // convert bounty to int
+
+            // Create a new MissionInfo object using parsed data
+            MissionInfo mission = new MissionInfo(
+                missionID, missionType, dangerLevel,
+                missionDate, expectedDuration, bountyReward
+            );
+
+            // Add the mission to the pirate's mission list
+            existing.addMission(mission);
+        }
+
+        // Close the file after reading is done
+        in.close();
+    }
+
+    // Getter method to return the full list of pirates (for other classes to use)
+    public LinkedList<CrewMemberInfo> pirateList() 
+    {
+        return pirateList;
+    }
+}
