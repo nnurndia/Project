@@ -1,0 +1,86 @@
+// This class stores information about a single pirate crew member
+import java.util.LinkedList;
+
+public class CrewMemberInfo 
+{
+    // Declare private attributes for pirate info
+    private String pirateID;                           // Unique ID for the pirate (e.g. CM001)
+    private String pirateName;                         // Pirate's name (e.g. Luffy)
+    private String pirateCrew;                         // Name of the pirate crew (e.g. Straw Hat Pirates)
+    private LinkedList<MissionInfo> missionsList;      // List to store all missions assigned to this pirate
+
+    // Constructor to initialize the pirate's info
+    public CrewMemberInfo(String id, String name, String crew) 
+    {
+        pirateID = id;                                 // Set pirate ID
+        pirateName = name;                             // Set pirate name
+        pirateCrew = crew;                             // Set pirate crew
+        missionsList = new LinkedList<MissionInfo>();  // Create empty mission list for this pirate
+    }
+
+    // Getter method to return pirate ID
+    public String getPirateID()
+    {
+        return pirateID;
+    }
+
+    // Getter method to return pirate name
+    public String getPirateName()
+    {
+        return pirateName;
+    }
+
+    // Getter method to return pirate crew name
+    public String getPirateCrew()
+    {
+        return pirateCrew;
+    }
+
+    // Getter method to return the list of missions
+    public LinkedList<MissionInfo> getmissionsList()
+    {
+        return missionsList;
+    }
+
+    // Setter method to update pirate ID
+    public void setPirateID(String id)
+    {
+        pirateID = id;
+    }
+
+    // Setter method to update pirate name
+    public void setPirateName(String name)
+    {
+        pirateName = name;
+    }
+
+    // Setter method to update pirate crew name
+    public void setPirateCrew (String crew)
+    {
+        pirateCrew = crew;
+    }
+
+    // Method to add a mission to the pirate's mission list
+    public void addMission(MissionInfo mission)
+    {
+        missionsList.add(mission);  // Add mission object to the LinkedList
+    }
+
+    // Method to calculate total bounty from all missions
+    public int getTotalBounty() {
+        int total = 0; // Start from 0
+        for (MissionInfo mission : missionsList) {
+            total += mission.getBountyReward(); // Add each mission's bounty reward
+        }
+        return total; // Return total bounty
+    }
+
+    // toString method to display the pirate's summary
+    public String toString()
+    {
+        return "Pirate ID: " + pirateID +                      // Show ID
+               "\nPirate Name: " + pirateCrew +                // ⚠ Bug: Should show pirateName, not pirateCrew
+               "\nTotal Mission: " + missionsList.size() +     // Total number of missions
+               "\nTotal Bounty: " + getTotalBounty() + " Berries\n"; // Sum of bounty
+    }
+}
